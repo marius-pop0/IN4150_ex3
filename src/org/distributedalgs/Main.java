@@ -23,8 +23,11 @@ public class Main {
 
         Byzantine localObject=null;
 
-        try{
+        try {
             java.rmi.registry.LocateRegistry.createRegistry(REGISTRY_PORT);
+        } catch (Exception e) {
+        }
+        try {
             for(int i=0;i<n;i++) {
                 localObject = new Byzantine(startId+i);
 
