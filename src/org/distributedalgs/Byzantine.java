@@ -72,12 +72,12 @@ public class Byzantine extends UnicastRemoteObject implements Byzantine_RMI{
         System.out.println("Object " + id + " sent value: " + m.value);
     }
 
-    public synchronized void updateLog(int messageDirection, int state, int round, int value) throws RemoteException, NotBoundException, AlreadyBoundException {
+    public synchronized void updateLog(int messageDirection, int state, int round, int value, int senderId) throws RemoteException, NotBoundException, AlreadyBoundException {
         log[logCounter][0] = messageDirection;
         log[logCounter][1] = state;
         log[logCounter][2] = round;
         log[logCounter][3] = value;
-        log[logCounter][4] = id;
+        log[logCounter][4] = senderId;
 
         logCounter++;
         if(logCounter > log.length-1) {
@@ -89,6 +89,10 @@ public class Byzantine extends UnicastRemoteObject implements Byzantine_RMI{
     }
 
     public void send(Message m){
-        updateLog(1, m.state, m.round, m.value, id);
+        try {
+            updateLog(1, m.state, m.round, m.value, m.senderId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
