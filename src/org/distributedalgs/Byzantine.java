@@ -18,7 +18,7 @@ public class Byzantine extends UnicastRemoteObject implements Byzantine_RMI{
     int id;
     String name;
 
-    int[][] log = new int[20][4];
+    int[][] log = new int[20][5];
     int logCounter=0;
 
     public Byzantine(int id) throws RemoteException, AlreadyBoundException, NotBoundException  {
@@ -77,6 +77,7 @@ public class Byzantine extends UnicastRemoteObject implements Byzantine_RMI{
         log[logCounter][1] = state;
         log[logCounter][2] = round;
         log[logCounter][3] = value;
+        log[logCounter][4] = id;
 
         logCounter++;
         if(logCounter > log.length-1) {
@@ -85,5 +86,9 @@ public class Byzantine extends UnicastRemoteObject implements Byzantine_RMI{
             logger_rmi.sendLog(this.id,log);
             logCounter=0;
         }
+    }
+
+    public void send(Message m){
+        updateLog(1, m.state, m.round, m.value, id);
     }
 }
