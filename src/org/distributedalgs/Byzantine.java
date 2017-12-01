@@ -1,5 +1,7 @@
 package org.distributedalgs;
 
+import log.Logger_RMI;
+
 import java.net.MalformedURLException;
 import java.rmi.AlreadyBoundException;
 import java.rmi.NotBoundException;
