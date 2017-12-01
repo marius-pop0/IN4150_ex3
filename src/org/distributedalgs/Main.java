@@ -23,25 +23,22 @@ public class Main {
 
         Byzantine localObject=null;
 
-        for(int i=0;i<n;i++) {
-            try {
+        try{
+            java.rmi.registry.LocateRegistry.createRegistry(REGISTRY_PORT);
+            for(int i=0;i<n;i++) {
                 localObject = new Byzantine(startId+i);
-                java.rmi.registry.LocateRegistry.createRegistry(REGISTRY_PORT);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
 
-            try {
                 localObject.REGISTRY_IP = serverIP;
                 localObject.updateRegistry(LocateRegistry.getRegistry(localObject.REGISTRY_IP));
                 localObject.registry = LocateRegistry.getRegistry(localObject.REGISTRY_IP);
-
-            } catch (Exception e) {
-                e.printStackTrace();
+                System.out.println("initialized, this objects name: " + localObject.name);
             }
+
+        }catch (Exception e){
+            e.printStackTrace();
         }
 
-        System.out.println("initialized, this objects name: " + localObject.name);
+
 
         // Print the registry for testing purposes TODO: remove
         try {

@@ -36,10 +36,10 @@ public class Byzantine extends UnicastRemoteObject implements Byzantine_RMI{
     public void register(String name, Byzantine_RMI remoteObject) {
         try {
             java.rmi.Naming.rebind(name,remoteObject);
-            System.out.println("registry contents: ");
+            /*System.out.println("registry contents: ");
             for(String n : LocateRegistry.getRegistry().list()) {
                 System.out.println(n);
-            }
+            }*/
         } catch (Exception e) {
             e.printStackTrace();
         }
