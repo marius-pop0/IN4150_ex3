@@ -16,7 +16,10 @@ public class Byzantine extends UnicastRemoteObject implements Byzantine_RMI{
     int id;
     String name;
 
-    public Byzantine(int id) {
+    int[][] log = new int[20][4];
+    int logCounter=0;
+
+    public Byzantine(int id) throws RemoteException, AlreadyBoundException, NotBoundException  {
         super();
         this.id=id;
         name = "rmi://localhost:1099/main.Byzantine" + id;
@@ -56,7 +59,29 @@ public class Byzantine extends UnicastRemoteObject implements Byzantine_RMI{
     }
 
 
-    public void broadcast(Message m){
+    public void broadcast(Message m) throws RemoteException, NotBoundException, AlreadyBoundException {
+        for (String name : registry.list()) {
+            // do not send message to self or logger
+            if (!name.matches(".*BirSchSteph" + this.id) && !name.matches(".*Logger")){
+                Byzantine_RMI remoteObject = (Byzantine_RMI) registry.lookup(name);
+                remoteObject.send(m);
+            }
+        }
+        System.out.println("Object " + id + " sent value: " + m.value);
+    }
 
+    public synchronized void updateLog(int messageDirection, int state, int round, int value) throws RemoteException, NotBoundException, AlreadyBoundException {
+        log[logCounter][0] = messageDirection;
+        log[logCounter][1] = state;
+        log[logCounter][2] = round;
+        log[logCounter][3] = value;
+
+        logCounter++;
+        if(logCounter > log.length-1) {
+            Logger_RMI logger_rmi = (Logger_RMI) LocateRegistry.getRegistry().lookup("Logger");
+            //not sure if we need to  bind here.
+            logger_rmi.sendLog(this.id,log);
+            logCounter=0;
+        }
     }
 }

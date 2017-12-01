@@ -27,7 +27,7 @@ public class Main {
             try {
                 localObject = new Byzantine(startId+i);
                 java.rmi.registry.LocateRegistry.createRegistry(REGISTRY_PORT);
-            } catch (RemoteException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
@@ -39,6 +39,24 @@ public class Main {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
+
+        System.out.println("initialized, this objects name: " + localObject.name);
+
+        // Print the registry for testing purposes TODO: remove
+        try {
+            System.out.println("registry contents: ");
+            for(String name : localObject.registry.list()) {
+                System.out.println(name);
+            }
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+        //Wait for everyone to connect in the beginning
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 }
