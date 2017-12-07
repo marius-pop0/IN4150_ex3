@@ -162,7 +162,9 @@ public class Byzantine extends UnicastRemoteObject implements Byzantine_RMI{
                     System.out.println("Process: "+id+ " Has decided "+v);
                     state = DECIDED;
                 } else {
-                    state = WAIT_FOR_P_MESSAGES;
+                    if(state != DECIDED) {
+                        state = WAIT_FOR_P_MESSAGES;
+                    }
                 }
             }
         }
@@ -201,7 +203,9 @@ public class Byzantine extends UnicastRemoteObject implements Byzantine_RMI{
                     Thread.sleep(1000);
                     Runnable run = new Broadcast(this, new Message(id, r, v, NOTIFY));
                     new Thread(run).start();
-                    state = WAIT_FOR_N_MESSAGES;
+                    if(state != DECIDED) {
+                        state = WAIT_FOR_N_MESSAGES;
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
