@@ -1,4 +1,4 @@
-package org.distributedalgs;
+package ex3;
 
 import java.io.Serializable;
 

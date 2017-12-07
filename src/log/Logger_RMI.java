@@ -1,6 +1,6 @@
 package log;
 
-import org.distributedalgs.Byzantine_RMI;
+import ex3.Byzantine_RMI;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;

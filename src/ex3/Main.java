@@ -1,4 +1,4 @@
-package org.distributedalgs;
+package ex3;
 
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;

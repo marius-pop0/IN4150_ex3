@@ -1,4 +1,4 @@
-package org.distributedalgs;
+package ex3;
 
 import log.Logger_RMI;
 
@@ -13,8 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import static org.distributedalgs.Message.NOTIFY;
-import static org.distributedalgs.Message.PROPOSE;
+import static ex3.Message.NOTIFY;
+import static ex3.Message.PROPOSE;
 
 public class Byzantine extends UnicastRemoteObject implements Byzantine_RMI{
 
@@ -29,8 +29,8 @@ public class Byzantine extends UnicastRemoteObject implements Byzantine_RMI{
     int state;
     int numTraitors;
     int totalProcesses;
-    List<int[]> nMessages = new ArrayList<int[]>();
-    List<int[]> pMessages = new ArrayList<int[]>();
+    List<int[]> nMessages = new ArrayList<>();
+    List<int[]> pMessages = new ArrayList<>();
 
     final static int WAIT_FOR_N_MESSAGES = 0;
     final static int WAIT_FOR_P_MESSAGES = 1;
@@ -171,7 +171,7 @@ public class Byzantine extends UnicastRemoteObject implements Byzantine_RMI{
         else if(state == WAIT_FOR_P_MESSAGES) {
             // await n-f messages of form (P;r,*)
             if(pMessages.get(r)[0] + pMessages.get(r)[1] > totalProcesses-numTraitors) {
-                System.out.println("Process:" +id+ "Received enough Propose messages for round" +r);
+                System.out.println("Process: " +id+ " Received enough Propose messages for round " +r);
                 try {
                     // if more than f messages received of from (P;r,w=0) adopt value 0
                     if(pMessages.get(r)[0] > numTraitors) {
