@@ -183,6 +183,13 @@ public class Byzantine extends UnicastRemoteObject implements Byzantine_RMI{
                     }
                     // increase the round number
                     r++;
+                    while(nMessages.size() <= r) {
+                        nMessages.add(new int[2]);
+                    }
+                    while(pMessages.size() <= r) {
+                        pMessages.add(new int[2]);
+                    }
+
                     broadcast(new Message(id, r, v, NOTIFY));
                     state = WAIT_FOR_N_MESSAGES;
                 } catch (Exception e) {
