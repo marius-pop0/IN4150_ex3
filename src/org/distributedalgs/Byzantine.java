@@ -159,7 +159,7 @@ public class Byzantine extends UnicastRemoteObject implements Byzantine_RMI{
                 }
 
                 if(decided) {
-                    System.out.println("Process: "+id+ " Has decided "+v);
+
                     state = DECIDED;
                 } else {
                     if(state != DECIDED) {
@@ -178,6 +178,7 @@ public class Byzantine extends UnicastRemoteObject implements Byzantine_RMI{
                     if(pMessages.get(r)[0] > numTraitors) {
                         v = 0;
                         if(pMessages.get(r)[0] > numTraitors*3) {
+                            System.out.println("Process: "+id+ " Has decided "+v);
                             decided = true;
                         }
                     }
@@ -185,6 +186,7 @@ public class Byzantine extends UnicastRemoteObject implements Byzantine_RMI{
                     else if(pMessages.get(r)[1] > numTraitors) {
                         v = 1;
                         if(pMessages.get(r)[1] > numTraitors*3) {
+                            System.out.println("Process: "+id+ " Has decided "+v);
                             decided = true;
                         }
                     }
