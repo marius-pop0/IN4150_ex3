@@ -152,8 +152,10 @@ public class Byzantine extends UnicastRemoteObject implements Byzantine_RMI{
                 }
 
                 if(decided) {
+                    System.out.println("Process: "+id+ " Has decided "+v);
                     state = DECIDED;
                 } else {
+                    System.out.println("Process: " +id+ " Has received all needed Notify Messages for round "+r);
                     state = WAIT_FOR_P_MESSAGES;
                 }
             }
@@ -162,6 +164,7 @@ public class Byzantine extends UnicastRemoteObject implements Byzantine_RMI{
         else if(m.state == WAIT_FOR_P_MESSAGES) {
             // await n-f messages of form (P;r,*)
             if(pMessages.get(r)[0] + pMessages.get(r)[1] > totalProcesses-numTraitors) {
+                System.out.println("Process:" +id+ "Received enough Propose messages for round" +r);
                 try {
                     // if more than f messages received of from (P;r,w=0) adopt value 0
                     if(pMessages.get(r)[0] > numTraitors) {
