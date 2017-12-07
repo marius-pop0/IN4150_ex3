@@ -17,8 +17,8 @@ public class Broadcast implements Runnable {
     public void run(){
         int randomNum = ThreadLocalRandom.current().nextInt(0, 3000);
         try {
-            Thread.sleep(randomNum);
             if (localObject.state != DECIDED) {
+                Thread.sleep(randomNum);
                 localObject.broadcast(m);
             }
         } catch(Exception e) {
