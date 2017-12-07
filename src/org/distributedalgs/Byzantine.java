@@ -137,14 +137,17 @@ public class Byzantine extends UnicastRemoteObject implements Byzantine_RMI{
                 try {
                     // received (n+f)/2 messages (N;r,w) with w=0
                     if (nMessages.get(r)[0] > (totalProcesses + numTraitors) / 2) {
+                        Thread.sleep(1000);
                         broadcast(new Message(this.id, r, 0, 1));
                     }
                     // received (n+f)/2 messages (N;r,w) with w=1
                     else if (nMessages.get(r)[1] > (totalProcesses + numTraitors) / 2) {
+                        Thread.sleep(1000);
                         broadcast(new Message(this.id, r, 1, 1));
                     }
                     // otherwise choose a random value
                     else {
+                        Thread.sleep(1000);
                         broadcast(new Message(this.id, r, (new Random()).nextInt(2), 1));
                     }
                 } catch (Exception e) {
@@ -192,7 +195,7 @@ public class Byzantine extends UnicastRemoteObject implements Byzantine_RMI{
                     while(pMessages.size() <= r) {
                         pMessages.add(new int[2]);
                     }
-
+                    Thread.sleep(1000);
                     broadcast(new Message(id, r, v, NOTIFY));
                     state = WAIT_FOR_N_MESSAGES;
                 } catch (Exception e) {
