@@ -8,13 +8,14 @@ import static java.rmi.registry.Registry.REGISTRY_PORT;
 public class Main {
 
     public static void main(String[] args) {
-        if(args.length!=3){
-            System.err.println("Must Provide 3 Args. Number of Processes, Starting Id, Server IP");
+        if(args.length!=4){
+            System.err.println("Must Provide 4 Args. Number of Processes, number of traitors, Starting Id, Server IP");
             System.exit(1);
         }
         int n = Integer.parseInt(args[0]);
-        int startId = Integer.parseInt(args[1]);
-        String serverIP = args[2];
+        int f = Integer.parseInt(args[1]);
+        int startId = Integer.parseInt(args[2]);
+        String serverIP = args[3];
 
         // create and install a security manager
         if (System.getSecurityManager() == null) {
@@ -29,7 +30,7 @@ public class Main {
         }
         try {
             for(int i=0;i<n;i++) {
-                localObject = new Byzantine(startId+i);
+                localObject = new Byzantine(startId+i, f, n);
 
                 localObject.REGISTRY_IP = serverIP;
                 localObject.updateRegistry(LocateRegistry.getRegistry(localObject.REGISTRY_IP));

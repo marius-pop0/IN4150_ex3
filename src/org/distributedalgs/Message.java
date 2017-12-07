@@ -8,6 +8,13 @@ public class Message implements Serializable {
     int value;
     int state;
 
+    static final int NOTIFY = 0;
+    static final int PROPOSE = 1;
+
+    /**
+     * State 0=N, 1=P
+     *
+     */
     public Message(int senderId, int round, int value, int state) {
         this.senderId=senderId;
         this.round=round;
