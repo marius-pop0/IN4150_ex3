@@ -9,7 +9,7 @@ public class Main {
 
     public static void main(String[] args) {
         if(args.length!=5){
-            System.err.println("Must Provide 4 Args. Number of Processes, number of traitors, Starting Id, Server IP, boolean start");
+            System.err.println("Must Provide 5 Args. Number of Processes, number of traitors, Starting Id, Server IP, boolean start");
             System.exit(1);
         }
         int n = Integer.parseInt(args[0]);
