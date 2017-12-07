@@ -86,8 +86,8 @@ public class Byzantine extends UnicastRemoteObject implements Byzantine_RMI{
 
     public void broadcast(Message m) throws RemoteException, NotBoundException, AlreadyBoundException {
         for (String name : registry.list()) {
-            // do not send message to self or logger
-            if (!name.matches(".*Byzantine" + this.id) && !name.matches(".*Logger")){
+            // do not send message to logger
+            if (!name.matches(".*Logger") && name.matches("main\\.Byzantine.*")){
                 Byzantine_RMI remoteObject = (Byzantine_RMI) registry.lookup(name);
                 remoteObject.send(m);
             }
@@ -134,21 +134,25 @@ public class Byzantine extends UnicastRemoteObject implements Byzantine_RMI{
         if(state == WAIT_FOR_N_MESSAGES) {
             // await n-f messages of the form (N;r,*)
             if(nMessages.get(r)[0] + nMessages.get(r)[1] > totalProcesses-numTraitors) {
+                System.out.println("Process: " +id+ " Has received all needed Notify Messages for round "+r);
                 try {
                     // received (n+f)/2 messages (N;r,w) with w=0
                     if (nMessages.get(r)[0] > (totalProcesses + numTraitors) / 2) {
                         Thread.sleep(1000);
-                        broadcast(new Message(this.id, r, 0, 1));
+                        Runnable run = new Broadcast(this, new Message(id, r, 0, PROPOSE));
+                        new Thread(run).start();
                     }
                     // received (n+f)/2 messages (N;r,w) with w=1
                     else if (nMessages.get(r)[1] > (totalProcesses + numTraitors) / 2) {
                         Thread.sleep(1000);
-                        broadcast(new Message(this.id, r, 1, 1));
+                        Runnable run = new Broadcast(this, new Message(id, r, 1, PROPOSE));
+                        new Thread(run).start();
                     }
                     // otherwise choose a random value
                     else {
                         Thread.sleep(1000);
-                        broadcast(new Message(this.id, r, (new Random()).nextInt(2), 1));
+                        Runnable run = new Broadcast(this, new Message(id, r, (new Random()).nextInt(2), PROPOSE));
+                        new Thread(run).start();
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -158,7 +162,6 @@ public class Byzantine extends UnicastRemoteObject implements Byzantine_RMI{
                     System.out.println("Process: "+id+ " Has decided "+v);
                     state = DECIDED;
                 } else {
-                    System.out.println("Process: " +id+ " Has received all needed Notify Messages for round "+r);
                     state = WAIT_FOR_P_MESSAGES;
                 }
             }
@@ -196,7 +199,8 @@ public class Byzantine extends UnicastRemoteObject implements Byzantine_RMI{
                         pMessages.add(new int[2]);
                     }
                     Thread.sleep(1000);
-                    broadcast(new Message(id, r, v, NOTIFY));
+                    Runnable run = new Broadcast(this, new Message(id, r, v, NOTIFY));
+                    new Thread(run).start();
                     state = WAIT_FOR_N_MESSAGES;
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -207,7 +211,8 @@ public class Byzantine extends UnicastRemoteObject implements Byzantine_RMI{
     }
 
     public void firstBroadcast() throws RemoteException, NotBoundException, AlreadyBoundException {
-        broadcast(new Message(id, r, v, NOTIFY));
+        Runnable run = new Broadcast(this, new Message(id, r, v, NOTIFY));
+        new Thread(run).start();
     }
 
 
