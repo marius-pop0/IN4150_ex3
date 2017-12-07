@@ -159,7 +159,6 @@ public class Byzantine extends UnicastRemoteObject implements Byzantine_RMI{
                 }
 
                 if(decided) {
-
                     state = DECIDED;
                 } else {
                     if(state != DECIDED) {

@@ -2,6 +2,8 @@ package org.distributedalgs;
 
 import java.util.concurrent.ThreadLocalRandom;
 
+import static org.distributedalgs.Byzantine.DECIDED;
+
 public class Broadcast implements Runnable {
     Byzantine localObject;
     Message m;
@@ -16,7 +18,9 @@ public class Broadcast implements Runnable {
         int randomNum = ThreadLocalRandom.current().nextInt(0, 3000);
         try {
             Thread.sleep(randomNum);
-            localObject.broadcast(m);
+            if (localObject.state != DECIDED) {
+                localObject.broadcast(m);
+            }
         } catch(Exception e) {
             e.printStackTrace();
         }
