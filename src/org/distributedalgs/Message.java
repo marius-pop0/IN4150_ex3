@@ -22,4 +22,8 @@ public class Message implements Serializable {
         this.state=state;
     }
 
+
+    public String toString() {
+        return "<Message: from process " + senderId + " (" + state + "," + round + "," + value + ")>";
+    }
 }

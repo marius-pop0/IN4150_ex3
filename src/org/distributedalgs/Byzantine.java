@@ -114,6 +114,7 @@ public class Byzantine extends UnicastRemoteObject implements Byzantine_RMI{
     public void send(Message m){
         try {
             updateLog(1, m.state, m.round, m.value, m.senderId);
+            System.out.println("Process " + id + " received " + m.toString());
         } catch (Exception e) {
             e.printStackTrace();
         }

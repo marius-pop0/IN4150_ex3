@@ -8,8 +8,8 @@ import static java.rmi.registry.Registry.REGISTRY_PORT;
 public class Main {
 
     public static void main(String[] args) {
-        if(args.length!=4){
-            System.err.println("Must Provide 4 Args. Number of Processes, number of traitors, Starting Id, Server IP");
+        if(args.length!=5){
+            System.err.println("Must Provide 4 Args. Number of Processes, number of traitors, Starting Id, Server IP, boolean start");
             System.exit(1);
         }
         int n = Integer.parseInt(args[0]);
@@ -53,11 +53,18 @@ public class Main {
         } catch (RemoteException e) {
             e.printStackTrace();
         }
-        //Wait for everyone to connect in the beginning
-        try {
-            Thread.sleep(10000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+
+        // start the algorithm
+        if(args[4].equals("true")){
+            try {
+                for (String name : localObject.registry.list()) {
+                    Byzantine_RMI process = (Byzantine_RMI) localObject.registry.lookup(name);
+                    process.firstBroadcast();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
+
     }
 }
