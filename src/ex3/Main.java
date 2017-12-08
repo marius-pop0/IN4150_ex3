@@ -8,8 +8,8 @@ import static java.rmi.registry.Registry.REGISTRY_PORT;
 public class Main {
 
     public static void main(String[] args) {
-        if(args.length!=7){
-            System.err.println("Must Provide 7 Args. Number of Processes, total processes, number of traitors, Starting Id, Server IP, boolean start, boolean traitorProcesses");
+        if(args.length!=8){
+            System.err.println("Must Provide 8 Args. Number of Processes, total processes, number of traitors, Starting Id, Server IP, boolean start, boolean traitorProcesses, message value");
             System.exit(1);
         }
         int n = Integer.parseInt(args[0]);
@@ -32,10 +32,10 @@ public class Main {
         try {
             for(int i=0;i<n;i++) {
                 if(args[6].equals("true")){
-                    localObject = new Byzantine(startId+i, f, totaln,true);
+                    localObject = new Byzantine(startId+i, f, totaln,true,Integer.parseInt(args[7]));
                 }
                 else{
-                    localObject = new Byzantine(startId+i, f, totaln,false);
+                    localObject = new Byzantine(startId+i, f, totaln,false,Integer.parseInt(args[7]));
                 }
                 localObject.REGISTRY_IP = serverIP;
                 localObject.updateRegistry(LocateRegistry.getRegistry(localObject.REGISTRY_IP));
