@@ -122,10 +122,10 @@ public class Byzantine extends UnicastRemoteObject implements Byzantine_RMI{
         }
 
         while(nMessages.size() <= m.round) {
-            nMessages.add(nMessages.size(), new int[2]);
+            nMessages.add(nMessages.size(), new int[3]);
         }
         while(pMessages.size() <= m.round) {
-            pMessages.add(pMessages.size(), new int[2]);
+            pMessages.add(pMessages.size(), new int[3]);
         }
 
         // save received message
@@ -137,7 +137,7 @@ public class Byzantine extends UnicastRemoteObject implements Byzantine_RMI{
 
         if(state == WAIT_FOR_N_MESSAGES) {
             // await n-f messages of the form (N;r,*)
-            if(nMessages.get(r)[0] + nMessages.get(r)[1] > totalProcesses-numTraitors) {
+            if(nMessages.get(r)[0] + nMessages.get(r)[1] + nMessages.get(r)[2] >= totalProcesses-numTraitors) {
                 System.out.println("Process: " +id+ " Has received all needed Notify Messages for round "+r);
                 try {
                     // received (n+f)/2 messages (N;r,w) with w=0
@@ -150,7 +150,7 @@ public class Byzantine extends UnicastRemoteObject implements Byzantine_RMI{
                     }
                     // otherwise choose a random value
                     else {
-                        checkTraitorAndSend((new Random()).nextInt(2),PROPOSE);
+                        checkTraitorAndSend(2,PROPOSE);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -168,7 +168,7 @@ public class Byzantine extends UnicastRemoteObject implements Byzantine_RMI{
 
         else if(state == WAIT_FOR_P_MESSAGES) {
             // await n-f messages of form (P;r,*)
-            if(pMessages.get(r)[0] + pMessages.get(r)[1] > totalProcesses-numTraitors) {
+            if(pMessages.get(r)[0] + pMessages.get(r)[1] + pMessages.get(r)[2] >= totalProcesses-numTraitors) {
                 System.out.println("Process: " +id+ " Received enough Propose messages for round " +r);
                 try {
                     // if more than f messages received of from (P;r,w=0) adopt value 0
