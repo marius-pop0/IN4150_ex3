@@ -250,6 +250,9 @@ public class Byzantine extends UnicastRemoteObject implements Byzantine_RMI{
 
             }
 
+        }else {
+            buildMessageSend(new Message(id, r, messageValue, messageState));
         }
+
     }
 }
