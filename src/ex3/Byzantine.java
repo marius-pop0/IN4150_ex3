@@ -194,10 +194,10 @@ public class Byzantine extends UnicastRemoteObject implements Byzantine_RMI{
                     // increase the round number
                     r++;
                     while(nMessages.size() <= r) {
-                        nMessages.add(new int[2]);
+                        nMessages.add(new int[3]);
                     }
                     while(pMessages.size() <= r) {
-                        pMessages.add(new int[2]);
+                        pMessages.add(new int[3]);
                     }
 
                     checkTraitorAndSend(v,NOTIFY);
@@ -219,7 +219,6 @@ public class Byzantine extends UnicastRemoteObject implements Byzantine_RMI{
     }
 
     public void buildMessageSend(Message m) throws InterruptedException {
-        Thread.sleep(1000);
         Runnable run = new Broadcast(this, m);
         new Thread(run).start();
     }
