@@ -120,16 +120,18 @@ public class Byzantine extends UnicastRemoteObject implements Byzantine_RMI{
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        while(nMessages.size() <= m.round) {
+            nMessages.add(nMessages.size(), new int[2]);
+        }
+        while(pMessages.size() <= m.round) {
+            pMessages.add(pMessages.size(), new int[2]);
+        }
+
         // save received message
         if(m.state == NOTIFY) {
-            while(nMessages.size() <= m.round) {
-                nMessages.add(nMessages.size(), new int[2]);
-            }
             nMessages.get(m.round)[m.value]++;
         } else if(m.state == PROPOSE) {
-            while(pMessages.size() <= m.round) {
-                pMessages.add(pMessages.size(), new int[2]);
-            }
             pMessages.get(m.round)[m.value]++;
         }
 
