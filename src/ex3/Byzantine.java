@@ -49,8 +49,9 @@ public class Byzantine extends UnicastRemoteObject implements Byzantine_RMI{
         numTraitors = f;
         totalProcesses = n;
         this.traitor=traitor;
-        if(traitor){this.v = (new Random()).nextInt(2);}
-        else {this.v = v;}
+        this.v = v;
+//        if(traitor){this.v = (new Random()).nextInt(2);}
+//        else {this.v = v;}
     }
 
     /**
@@ -88,6 +89,7 @@ public class Byzantine extends UnicastRemoteObject implements Byzantine_RMI{
 
 
     public void broadcast(Message m) throws RemoteException, NotBoundException, AlreadyBoundException {
+        updateLog(0,m.state,m.round,m.value,id);
         for (String name : registry.list()) {
             // do not send message to logger
             if (!name.matches(".*Logger") && name.matches("main\\.Byzantine.*")){
@@ -186,6 +188,7 @@ public class Byzantine extends UnicastRemoteObject implements Byzantine_RMI{
                         if(pMessages.get(r)[1] > numTraitors*3) {
                             System.out.println("Process: "+id+ " Has decided "+v);
                             decided = true;
+                            updateLog(2,-1,-1,v,-1);
                         }
                     }
                     // if not more than f messages of either form received

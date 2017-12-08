@@ -15,10 +15,8 @@ public class Broadcast implements Runnable {
     public void run(){
         int randomNum = ThreadLocalRandom.current().nextInt(0, 3000);
         try {
-//            if (localObject.state != Byzantine.DECIDED) {
-                Thread.sleep(randomNum);
-                localObject.broadcast(m);
-//            }
+            Thread.sleep(randomNum);
+            localObject.broadcast(m);
         } catch(Exception e) {
             e.printStackTrace();
         }

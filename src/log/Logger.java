@@ -23,11 +23,13 @@ public class Logger extends UnicastRemoteObject implements Logger_RMI {
     /**
      * Remote objects can call this method to send their latest logs to the Logger.
      * Columns of log depict:
-     *  - First column: indicator for kind of log | 0: broadcast | 1: received message
+     *  - First column: indicator for kind of log | 0: broadcast | 1: received message | 2: decided
      *  - Second column: state of message, either N or P
      *  - Third column: round number
      *  - Fourth column: value
      *  - Fifth column: senderID
+     *
+     *  For decided, put 'random' values in the columns that will normally hold a message
      * @param remoteId - id of the remote object
      * @param log - Log of last few actions of the remote object
      * @throws RemoteException
@@ -56,6 +58,8 @@ public class Logger extends UnicastRemoteObject implements Logger_RMI {
                     break;
                 case 1: out.println("Received message " + message + " from process " + log[i][4]);
                     System.out.println("Received message " + message + " from process " + log[i][4]);
+                    break;
+                case 2: out.println("Decided on value: " + log[i][3]);
                     break;
                 default: out.println("Wrong format");
                     System.out.println("Wrong format");
