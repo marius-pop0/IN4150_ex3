@@ -103,7 +103,7 @@ public class Logger extends UnicastRemoteObject implements Logger_RMI {
             res += "P,";
         }
         res += round + ",";
-        res += value;
+        res += value + ")";
 
         return res;
     }

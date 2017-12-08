@@ -37,7 +37,7 @@ public class Byzantine extends UnicastRemoteObject implements Byzantine_RMI{
     final static int WAIT_FOR_P_MESSAGES = 1;
     final static int DECIDED = 2;
 
-    int[][] log = new int[20][5];
+    int[][] log = new int[1][5];
     int logCounter=0;
 
     public Byzantine(int id, int f, int n,boolean traitor,int v) throws RemoteException, AlreadyBoundException, NotBoundException  {
@@ -108,7 +108,7 @@ public class Byzantine extends UnicastRemoteObject implements Byzantine_RMI{
         log[logCounter][4] = senderId;
 
         logCounter++;
-        if(logCounter > log.length-1 || decided) {
+        if(logCounter > log.length-1) {
             Logger_RMI logger_rmi = (Logger_RMI) LocateRegistry.getRegistry().lookup("Logger");
             //not sure if we need to  bind here.
             logger_rmi.sendLog(this.id,log);
@@ -179,6 +179,7 @@ public class Byzantine extends UnicastRemoteObject implements Byzantine_RMI{
                         v = 0;
                         if(pMessages.get(r)[0] > numTraitors*3) {
                             System.out.println("Process: "+id+ " Has decided "+v);
+                            updateLog(2,-1,-1,v,-1);
                             decided = true;
                         }
                     }
