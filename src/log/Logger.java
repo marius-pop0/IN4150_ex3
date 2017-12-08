@@ -4,7 +4,11 @@ import ex3.Byzantine_RMI;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Paths;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -15,6 +19,7 @@ import static java.rmi.registry.Registry.REGISTRY_PORT;
 public class Logger extends UnicastRemoteObject implements Logger_RMI {
     private Registry registry;
     String name =  "rmi://localhost:1099/Logger";
+    boolean firstTime=true;
 
     protected Logger() throws RemoteException {
     }
@@ -40,9 +45,22 @@ public class Logger extends UnicastRemoteObject implements Logger_RMI {
             return;
         }
 
+        if(firstTime){
+            try {
+                Files.delete(Paths.get("log_process_" + remoteId + ".txt"));
+            } catch (NoSuchFileException e){
+                //File does not exist. We don't need to delete it
+            } catch (IOException e) {
+                e.printStackTrace();
+                // File permission problems.
+            }
+            firstTime=false;
+        }
+
         PrintWriter out;
         try {
             out = new PrintWriter(new FileOutputStream("log_process_" + remoteId + ".txt", true));
+
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             return;
