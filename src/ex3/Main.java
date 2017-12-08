@@ -36,7 +36,7 @@ public class Main {
                 localObject.REGISTRY_IP = serverIP;
                 localObject.updateRegistry(LocateRegistry.getRegistry(localObject.REGISTRY_IP));
                 localObject.registry = LocateRegistry.getRegistry(localObject.REGISTRY_IP);
-                System.out.println("initialized, this objects name: " + localObject.name);
+                System.out.println("initialized " + localObject.name + " with value " + localObject.v);
             }
 
         }catch (Exception e){

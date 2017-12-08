@@ -92,7 +92,7 @@ public class Byzantine extends UnicastRemoteObject implements Byzantine_RMI{
                 remoteObject.send(m);
             }
         }
-        System.out.println("Object " + id + " sent value: " + m.value);
+        System.out.println("Process " + id + " sent message: " + m.toString());
     }
 
     public synchronized void updateLog(int messageDirection, int state, int round, int value, int senderId) throws RemoteException, NotBoundException, AlreadyBoundException {
@@ -111,7 +111,7 @@ public class Byzantine extends UnicastRemoteObject implements Byzantine_RMI{
         }
     }
 
-    public void send(Message m){
+    public synchronized void send(Message m){
         try {
             updateLog(1, m.state, m.round, m.value, m.senderId);
             System.out.println("Process " + id + " received " + m.toString());
