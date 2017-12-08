@@ -26,6 +26,7 @@ public class Byzantine extends UnicastRemoteObject implements Byzantine_RMI{
     int r;
     int v;
     boolean decided;
+    boolean traitor=false;
     int state;
     int numTraitors;
     int totalProcesses;
@@ -39,7 +40,7 @@ public class Byzantine extends UnicastRemoteObject implements Byzantine_RMI{
     int[][] log = new int[20][5];
     int logCounter=0;
 
-    public Byzantine(int id, int f, int n) throws RemoteException, AlreadyBoundException, NotBoundException  {
+    public Byzantine(int id, int f, int n,boolean traitor) throws RemoteException, AlreadyBoundException, NotBoundException  {
         super();
         this.id=id;
         name = "rmi://localhost:1099/main.Byzantine" + id;
@@ -47,6 +48,7 @@ public class Byzantine extends UnicastRemoteObject implements Byzantine_RMI{
         decided = false;
         numTraitors = f;
         totalProcesses = n;
+        this.traitor=traitor;
         v = (new Random()).nextInt(2);
     }
 
@@ -138,21 +140,15 @@ public class Byzantine extends UnicastRemoteObject implements Byzantine_RMI{
                 try {
                     // received (n+f)/2 messages (N;r,w) with w=0
                     if (nMessages.get(r)[0] > (totalProcesses + numTraitors) / 2) {
-                        Thread.sleep(1000);
-                        Runnable run = new Broadcast(this, new Message(id, r, 0, PROPOSE));
-                        new Thread(run).start();
+                        checkTraitorAndSend(0,PROPOSE);
                     }
                     // received (n+f)/2 messages (N;r,w) with w=1
                     else if (nMessages.get(r)[1] > (totalProcesses + numTraitors) / 2) {
-                        Thread.sleep(1000);
-                        Runnable run = new Broadcast(this, new Message(id, r, 1, PROPOSE));
-                        new Thread(run).start();
+                        checkTraitorAndSend(1,PROPOSE);
                     }
                     // otherwise choose a random value
                     else {
-                        Thread.sleep(1000);
-                        Runnable run = new Broadcast(this, new Message(id, r, (new Random()).nextInt(2), PROPOSE));
-                        new Thread(run).start();
+                        checkTraitorAndSend((new Random()).nextInt(2),PROPOSE);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -201,9 +197,9 @@ public class Byzantine extends UnicastRemoteObject implements Byzantine_RMI{
                     while(pMessages.size() <= r) {
                         pMessages.add(new int[2]);
                     }
-                    Thread.sleep(1000);
-                    Runnable run = new Broadcast(this, new Message(id, r, v, NOTIFY));
-                    new Thread(run).start();
+
+                    checkTraitorAndSend(v,NOTIFY);
+
                     if(state != DECIDED) {
                         state = WAIT_FOR_N_MESSAGES;
                     }
@@ -220,5 +216,38 @@ public class Byzantine extends UnicastRemoteObject implements Byzantine_RMI{
         new Thread(run).start();
     }
 
+    public void buildMessageSend(Message m) throws InterruptedException {
+        Thread.sleep(1000);
+        Runnable run = new Broadcast(this, m);
+        new Thread(run).start();
+    }
 
+    public void checkTraitorAndSend(int messageValue,int messageState) throws InterruptedException {
+        if(traitor){
+            int behaviour = new Random().nextInt(5);
+            switch (behaviour){
+                //behaviour 0 - Send Normal Message
+                case 1: behaviour = 0;
+                    buildMessageSend(new Message(id, r, messageValue, messageState));
+                    break;
+                //behaviour 1 - Send Flipped Message Value
+                case 2: behaviour = 1;
+                    buildMessageSend(new Message(id, r, 1-messageValue, messageState));
+                    break;
+                //behaviour 2 - Send Flipped State
+                case 3: behaviour = 2;
+                    buildMessageSend(new Message(id, r, messageValue, 1-messageState));
+                    break;
+                //behaviour 3 - Send Flipped State and Message
+                case 4: behaviour = 3;
+                    buildMessageSend(new Message(id, r, 1-messageValue, 1-messageState));
+                    break;
+                //behaviour 4 - Dont send Anything
+                case 5: behaviour = 4;
+                    break;
+
+            }
+
+        }
+    }
 }
