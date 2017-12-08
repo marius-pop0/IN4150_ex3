@@ -229,23 +229,23 @@ public class Byzantine extends UnicastRemoteObject implements Byzantine_RMI{
             int behaviour = new Random().nextInt(5);
             switch (behaviour){
                 //behaviour 0 - Send Normal Message
-                case 1: behaviour = 0;
+                case 0:
                     buildMessageSend(new Message(id, r, messageValue, messageState));
                     break;
                 //behaviour 1 - Send Flipped Message Value
-                case 2: behaviour = 1;
+                case 1:
                     buildMessageSend(new Message(id, r, 1-messageValue, messageState));
                     break;
                 //behaviour 2 - Send Flipped State
-                case 3: behaviour = 2;
+                case 2:
                     buildMessageSend(new Message(id, r, messageValue, 1-messageState));
                     break;
                 //behaviour 3 - Send Flipped State and Message
-                case 4: behaviour = 3;
+                case 3:
                     buildMessageSend(new Message(id, r, 1-messageValue, 1-messageState));
                     break;
                 //behaviour 4 - Dont send Anything
-                case 5: behaviour = 4;
+                case 4:
                     break;
 
             }
