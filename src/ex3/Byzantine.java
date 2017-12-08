@@ -108,7 +108,7 @@ public class Byzantine extends UnicastRemoteObject implements Byzantine_RMI{
         log[logCounter][4] = senderId;
 
         logCounter++;
-        if(logCounter > log.length-1) {
+        if(logCounter > log.length-1 || decided) {
             Logger_RMI logger_rmi = (Logger_RMI) LocateRegistry.getRegistry().lookup("Logger");
             //not sure if we need to  bind here.
             logger_rmi.sendLog(this.id,log);
