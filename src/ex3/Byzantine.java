@@ -229,26 +229,22 @@ public class Byzantine extends UnicastRemoteObject implements Byzantine_RMI{
 
     public void checkTraitorAndSend(int messageValue,int messageState) throws InterruptedException {
         if(traitor){
-            int behaviour = new Random().nextInt(5);
+            int behaviour = new Random().nextInt(4);
             switch (behaviour){
-                //behaviour 0 - Send Normal Message
+                //behaviour 0 - Send Random Message Value
                 case 0:
-                    buildMessageSend(new Message(id, r, messageValue, messageState));
-                    break;
-                //behaviour 1 - Send Random Message Value
-                case 1:
                     buildMessageSend(new Message(id, r, new Random().nextInt(3), messageState));
                     break;
-                //behaviour 2 - Send Flipped State
-                case 2:
+                //behaviour 1 - Send Flipped State
+                case 1:
                     buildMessageSend(new Message(id, r, messageValue, 1-messageState));
                     break;
-                //behaviour 3 - Send Flipped State and Random Message Message
-                case 3:
+                //behaviour 2 - Send Flipped State and Random Message Message
+                case 2:
                     buildMessageSend(new Message(id, r, new Random().nextInt(3), 1-messageState));
                     break;
-                //behaviour 4 - Dont send Anything
-                case 4:
+                //behaviour 3 - Dont send Anything
+                case 3:
                     break;
 
             }
