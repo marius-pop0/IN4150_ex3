@@ -32,6 +32,7 @@ public class Main {
         try {
             for(int i=0;i<n;i++) {
                 if(args[6].equals("true")){
+                    System.out.println("Traitor Process is started");
                     localObject = new Byzantine(startId+i, f, totaln,true);
                 }
                 else{

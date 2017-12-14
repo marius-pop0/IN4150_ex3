@@ -26,7 +26,7 @@ public class Byzantine extends UnicastRemoteObject implements Byzantine_RMI{
     int r;
     int v;
     boolean decided;
-    boolean traitor=false;
+    boolean traitor;
     int state;
     int numTraitors;
     int totalProcesses;
@@ -99,6 +99,42 @@ public class Byzantine extends UnicastRemoteObject implements Byzantine_RMI{
         System.out.println("Process " + id + " sent message: " + m.toString());
     }
 
+    public void traitorBroadcast(Message m) throws RemoteException, NotBoundException, AlreadyBoundException {
+        updateLog(0,m.state,m.round,m.value,id);
+        for (String name : registry.list()) {
+            // do not send message to logger
+            int behaviour = new Random().nextInt(4);
+            switch (behaviour) {
+                case 0:
+                    //behaviour 0 - Send Random Message Value
+                    System.out.println("Process: "+id +" in Round: "+r+ " behaviour 0 - Send Random Message Value to "+name);
+                    m.value=(new Random().nextInt(3));
+                    break;
+                case 1:
+                    //behaviour 1 - Send Flipped State
+                    System.out.println("Process: "+id +" in Round: "+r+ " behaviour 1 - Send Flipped State to "+name);
+                    m.state=1-m.state;
+                    break;
+                case 2:
+                    //behaviour 2 - Send Flipped State and Random Message Message
+                    System.out.println("Process: "+id +" in Round: "+r+ " behaviour 2 - Send Flipped State and Random Message Message to "+name);
+                    m.value=(new Random().nextInt(3));
+                    m.state=1-m.state;
+                    break;
+                case 3:
+                    //behaviour 3 - Dont send Anything
+                    System.out.println("Process: "+id +" in Round: "+r+ " behaviour 3 - Dont send Anything to "+name);
+                    break;
+            }
+
+            if (!name.matches(".*Logger") && name.matches("main\\.Byzantine.*")){
+                Byzantine_RMI remoteObject = (Byzantine_RMI) registry.lookup(name);
+                remoteObject.send(m);
+            }
+        }
+        System.out.println("Process " + id + " sent message: " + m.toString());
+    }
+
     public synchronized void updateLog(int messageDirection, int state, int round, int value, int senderId) throws RemoteException, NotBoundException, AlreadyBoundException {
         log[logCounter][0] = messageDirection;
         log[logCounter][1] = state;
@@ -144,15 +180,18 @@ public class Byzantine extends UnicastRemoteObject implements Byzantine_RMI{
                 try {
                     // received (n+f)/2 messages (N;r,w) with w=0
                     if (nMessages.get(r)[0] > (totalProcesses + numTraitors) / 2) {
-                        checkTraitorAndSend(0,PROPOSE);
+                        buildMessageSend(new Message(id, r, 0, PROPOSE));
+                        //checkTraitorAndSend(0,PROPOSE);
                     }
                     // received (n+f)/2 messages (N;r,w) with w=1
                     else if (nMessages.get(r)[1] > (totalProcesses + numTraitors) / 2) {
-                        checkTraitorAndSend(1,PROPOSE);
+                        buildMessageSend(new Message(id, r, 1, PROPOSE));
+                        //checkTraitorAndSend(1,PROPOSE);
                     }
                     // otherwise choose a random value
                     else {
-                        checkTraitorAndSend(2,PROPOSE);
+                        buildMessageSend(new Message(id, r, 2, PROPOSE));
+                        //checkTraitorAndSend(2,PROPOSE);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -204,8 +243,8 @@ public class Byzantine extends UnicastRemoteObject implements Byzantine_RMI{
                     while(pMessages.size() <= r) {
                         pMessages.add(new int[3]);
                     }
-
-                    checkTraitorAndSend(v,NOTIFY);
+                    buildMessageSend(new Message(id, r, v, NOTIFY));
+                    //checkTraitorAndSend(v,NOTIFY);
 
                     if(state != DECIDED) {
                         state = WAIT_FOR_N_MESSAGES;
@@ -220,7 +259,8 @@ public class Byzantine extends UnicastRemoteObject implements Byzantine_RMI{
 
     public void firstBroadcast() throws RemoteException, NotBoundException, AlreadyBoundException {
         try {
-            checkTraitorAndSend(v,NOTIFY);
+            buildMessageSend(new Message(id, r, v, NOTIFY));
+            //checkTraitorAndSend(v,NOTIFY);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -231,24 +271,28 @@ public class Byzantine extends UnicastRemoteObject implements Byzantine_RMI{
         new Thread(run).start();
     }
 
-    public void checkTraitorAndSend(int messageValue,int messageState) throws InterruptedException {
+    /*public void checkTraitorAndSend(int messageValue,int messageState) throws InterruptedException {
         if(traitor){
             int behaviour = new Random().nextInt(4);
             switch (behaviour){
                 //behaviour 0 - Send Random Message Value
                 case 0:
+                    System.out.println("Process: "+id +" in Round: "+r+" Had initial state: "+messageState+" behaviour 0 - Send Random Message Value");
                     buildMessageSend(new Message(id, r, new Random().nextInt(3), messageState));
                     break;
                 //behaviour 1 - Send Flipped State
                 case 1:
+                    System.out.println("Process: "+id +" in Round: "+r+" Had initial state: "+messageState+" behaviour 1 - Send Flipped State");
                     buildMessageSend(new Message(id, r, messageValue, 1-messageState));
                     break;
                 //behaviour 2 - Send Flipped State and Random Message Message
                 case 2:
+                    System.out.println("Process: "+id +" in Round: "+r+" Had initial state: "+messageState+" behaviour 2 - Send Flipped State and Random Message Message");
                     buildMessageSend(new Message(id, r, new Random().nextInt(3), 1-messageState));
                     break;
                 //behaviour 3 - Dont send Anything
                 case 3:
+                    System.out.println("Process: "+id +" in Round: "+r+" Had initial state: "+messageState+" behaviour 3 - Dont send Anything");
                     break;
 
             }
@@ -257,5 +301,5 @@ public class Byzantine extends UnicastRemoteObject implements Byzantine_RMI{
             buildMessageSend(new Message(id, r, messageValue, messageState));
         }
 
-    }
+    }*/
 }
