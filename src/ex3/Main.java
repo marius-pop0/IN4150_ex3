@@ -8,7 +8,7 @@ import static java.rmi.registry.Registry.REGISTRY_PORT;
 public class Main {
 
     public static void main(String[] args) {
-        if(args.length!=8){
+        if(args.length!=7){
             System.err.println("Must Provide 8 Args. Number of Processes, total processes, number of traitors, Starting Id, Server IP, boolean start, boolean traitorProcesses");
             System.exit(1);
         }
