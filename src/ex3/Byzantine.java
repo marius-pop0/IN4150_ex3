@@ -40,7 +40,7 @@ public class Byzantine extends UnicastRemoteObject implements Byzantine_RMI{
     int[][] log = new int[1][5];
     int logCounter=0;
 
-    public Byzantine(int id, int f, int n,boolean traitor,int v) throws RemoteException, AlreadyBoundException, NotBoundException  {
+    public Byzantine(int id, int f, int n,boolean traitor) throws RemoteException, AlreadyBoundException, NotBoundException  {
         super();
         this.id=id;
         name = "rmi://localhost:1099/main.Byzantine" + id;
@@ -49,9 +49,8 @@ public class Byzantine extends UnicastRemoteObject implements Byzantine_RMI{
         numTraitors = f;
         totalProcesses = n;
         this.traitor=traitor;
-        this.v = v;
-//        if(traitor){this.v = (new Random()).nextInt(2);}
-//        else {this.v = v;}
+        this.v = (new Random()).nextInt(2);
+
     }
 
     /**
