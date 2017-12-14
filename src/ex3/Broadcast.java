@@ -16,8 +16,8 @@ public class Broadcast implements Runnable {
         int randomNum = ThreadLocalRandom.current().nextInt(0, 3000);
         try {
             Thread.sleep(randomNum);
-            if(localObject.traitor==true){localObject.broadcast(m);}
-            else {localObject.traitorBroadcast(m);}
+            if(localObject.traitor){localObject.traitorBroadcast(m);}
+            else {localObject.broadcast(m);}
         } catch(Exception e) {
             e.printStackTrace();
         }
