@@ -219,8 +219,11 @@ public class Byzantine extends UnicastRemoteObject implements Byzantine_RMI{
     }
 
     public void firstBroadcast() throws RemoteException, NotBoundException, AlreadyBoundException {
-        Runnable run = new Broadcast(this, new Message(id, r, v, NOTIFY));
-        new Thread(run).start();
+        try {
+            checkTraitorAndSend(v,NOTIFY);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     public void buildMessageSend(Message m) throws InterruptedException {
