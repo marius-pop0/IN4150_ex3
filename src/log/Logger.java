@@ -80,6 +80,8 @@ public class Logger extends UnicastRemoteObject implements Logger_RMI {
                     break;
                 case 2: out.println("Decided on value: " + log[i][3]);
                     break;
+                case 3: out.println("Picked random value: " + log[i][3] + " in round: " + log[i][2]);
+                    break;
                 default: out.println("Wrong format");
                     System.out.println("Wrong format");
                     break;

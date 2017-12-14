@@ -194,6 +194,7 @@ public class Byzantine extends UnicastRemoteObject implements Byzantine_RMI{
                     // if not more than f messages of either form received
                     else {
                         v = (new Random()).nextInt(2);
+                        updateLog(3, -1, r, v, -1);
                     }
                     // increase the round number
                     r++;
